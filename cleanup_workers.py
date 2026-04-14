@@ -28,15 +28,31 @@ def get_all_projects():
         "Content-Type": "application/json"
     }
     
-    # 首先尝试获取所有项目，不使用分页
-    response = requests.get(url, headers=headers)
-    if response.status_code != 200:
-        print(f"获取项目列表失败: {response.text}")
-        return None
+    all_projects = []
+    page = 1
+    
+    while True:
+        response = requests.get(f"{url}?page={page}", headers=headers)
+        if response.status_code != 200:
+            print(f"获取项目列表失败: {response.text}")
+            return None
         
-    result = response.json()['result']
-    print(f"总共获取到 {len(result)} 个项目")
-    return result
+        data = response.json()
+        result = data['result']
+        
+        if not result:
+            break
+            
+        all_projects.extend(result)
+        
+        # 如果这一页少于10条，说明到最后一页了
+        if len(result) < 10:
+            break
+            
+        page += 1
+
+    print(f"总共获取到 {len(all_projects)} 个项目")
+    return all_projects
 
 def get_deployments(project_name):
     """获取指定项目的所有部署记录"""
