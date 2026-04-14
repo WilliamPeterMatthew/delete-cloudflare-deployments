@@ -29,4 +29,5 @@ jobs:
         env:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
           CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CF_DELETE_ALIASED_DEPLOYMENTS: ${{ secrets.CF_DELETE_ALIASED_DEPLOYMENTS != '' && 'true' || 'false' }}
         run: python cleanup_workers.py 
