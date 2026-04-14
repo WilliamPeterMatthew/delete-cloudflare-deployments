@@ -5,6 +5,7 @@ from datetime import datetime
 # 从环境变量获取配置
 API_TOKEN = os.getenv('CF_API_TOKEN')
 ACCOUNT_ID = os.getenv('CF_ACCOUNT_ID')
+DELETE_ALIASED_DEPLOYMENTS = os.getenv('CF_DELETE_ALIASED_DEPLOYMENTS')
 
 def check_environment():
     """检查环境变量是否已正确设置"""
@@ -56,7 +57,10 @@ def get_deployments(project_name):
 
 def delete_deployment(project_name, deployment_id):
     """删除指定项目的指定部署记录"""
-    url = f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/pages/projects/{project_name}/deployments/{deployment_id}"
+    params = ''
+    if DELETE_ALIASED_DEPLOYMENTS == 'true':
+        params = '?force=true'
+    url = f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/pages/projects/{project_name}/deployments/{deployment_id}{params}"
     headers = {
         "Authorization": f"Bearer {API_TOKEN}",
         "Content-Type": "application/json"
